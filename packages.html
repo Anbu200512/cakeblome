@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Packages â€” CakeBloom | Themed Cake Smash Packages</title>
+  <meta name="description" content="Explore 10 themed cake smash packages at CakeBloom â€” Princess, Superhero, Jungle, Space, Rainbow, Dinosaur and more.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: {
+        colors: {
+          blush: {50:'#FDF2F9',100:'#FBE4F2',200:'#F8C9E6',300:'#F3A0D0',400:'#EA6CBB',500:'#D6249F',600:'#B81A82',700:'#94136A'},
+          lav: {100:'#FFF9E8',200:'#FFF1BF',300:'#FFE694',400:'#FFD23F',500:'#E5B40B',600:'#A87C00'},
+          butter: {100:'#FFF9E8',200:'#FFF1BF',300:'#FFE694',400:'#FFD23F',500:'#E5B40B',600:'#A87C00'},
+          minty: {100:'#ECFDF5',200:'#D1FAE5',300:'#A7F3D0',400:'#6EE7B7',500:'#34D399'},
+          cream: {50:'#FFFBEB',100:'#FEF3C7'},
+          ink: {700:'#4A4560',800:'#2A2444',900:'#1B1730',950:'#171330'},
+          pink: {50:'#FDF2F9',100:'#FBE4F2',200:'#F8C9E6',300:'#F3A0D0',400:'#EA6CBB',500:'#D6249F',600:'#B81A82',700:'#94136A'},
+          violet: {50:'#FFFDF7',100:'#FFF9E8',200:'#FFF1BF',300:'#FFE694',400:'#FFD23F',500:'#E5B40B',600:'#A87C00',700:'#7A5A00'},
+          fuchsia: {400:'#FF9EC4'},
+          sky: {50:'#FDF2F9',100:'#FBE4F2',200:'#F8C9E6',300:'#F3A0D0',400:'#EA6CBB',500:'#D6249F',600:'#B81A82',700:'#94136A'},
+        },
+        fontFamily: { display: ['Poppins','sans-serif'], body: ['Nunito','sans-serif'] },
+      } }
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@0.446.0/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    (function(){var t=localStorage.getItem('cakebloom_theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';localStorage.setItem('cakebloom_theme',t);}document.documentElement.classList.toggle('dark',t==='dark');document.documentElement.setAttribute('dir',localStorage.getItem('cakebloom_direction')||'ltr');})();
+  </script>
+</head>
+<body class="bg-white dark:bg-ink-900 text-ink-700 dark:text-[#D5D1E8] font-body" data-page="packages">
+  <div id="site-nav"></div>
+
+  <!-- ============ HEADER ============ -->
+  <section class="relative overflow-hidden bg-blush-50 dark:bg-ink-900">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(255,210,63,.28),transparent_42%),radial-gradient(circle_at_85%_4%,rgba(214,36,159,.18),transparent_45%)]"></div>
+    <div class="absolute -top-16 start-1/4 w-72 h-72 rounded-full bg-butter-200 dark:bg-butter-500/10 blur-3xl"></div>
+    <div class="absolute -bottom-28 -end-20 w-80 h-80 rounded-full bg-blush-200 dark:bg-blush-500/10 blur-3xl"></div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-14 sm:py-16 text-center relative">
+      <span class="badge badge-pink mb-3 anim-fade-up"><i data-lucide="gift" class="w-3.5 h-3.5"></i>10 Themed Packages</span>
+      <h1 class="font-display font-extrabold text-4xl sm:text-5xl leading-[1.1] text-ink-800 dark:text-white mb-4 anim-fade-up delay-1">
+        Choose Your <span class="text-gradient">Smash Adventure</span>
+      </h1>
+      <p class="font-semibold text-ink-700/75 dark:text-[#A8A2C0] leading-relaxed max-w-2xl mx-auto mb-6 anim-fade-up delay-2">
+        Every package includes the themed set, a fresh cake, all props, a 60–120 minute session and a private online proof gallery.
+      </p>
+      <div class="flex flex-wrap justify-center gap-3 anim-fade-up delay-3">
+        <a href="#package-grid" class="cb-btn cb-btn-primary"><i data-lucide="layout-grid" class="w-5 h-5"></i>Browse Packages</a>
+        <a href="contact.html" class="cb-btn cb-btn-outline"><i data-lucide="phone" class="w-5 h-5"></i>Talk to Us</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FILTERS ============ -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 -mt-2 mb-8">
+    <div class="cb-card p-4 sm:p-5 flex flex-wrap items-center gap-3">
+      <div class="flex items-center gap-2 font-display font-bold text-sm text-ink-800 dark:text-white"><i data-lucide="filter" class="w-4 h-4 text-blush-400"></i>Filters</div>
+      <select id="filter-theme" class="cb-input !w-auto flex-1 min-w-[10rem] !py-2.5 text-sm">
+        <option value="all">All Themes</option>
+      </select>
+      <select id="filter-price" class="cb-input !w-auto flex-1 min-w-[10rem] !py-2.5 text-sm">
+        <option value="all">Any Price</option>
+        <option value="under6000">Under â‚¹6,000</option>
+        <option value="6000-8000">â‚¹6,000 â€“ â‚¹8,000</option>
+        <option value="above8000">Above â‚¹8,000</option>
+      </select>
+      <select id="filter-sort" class="cb-input !w-auto flex-1 min-w-[10rem] !py-2.5 text-sm">
+        <option value="popular">Most Popular</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+      </select>
+      <span class="text-sm font-bold text-ink-700/60 dark:text-[#8B86A3] ms-auto" id="package-count"></span>
+    </div>
+  </section>
+
+  <!-- ============ GRID ============ -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-8">
+    <div id="package-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </section>
+
+  <!-- ============ PACKAGE MODAL ============ -->
+  <div id="package-modal" class="modal-backdrop hidden">
+    <div class="modal-panel modal-content"></div>
+  </div>
+
+  <!-- ============ BOTTOM CTA ============ -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+    <div class="cb-card p-8 sm:p-10 text-center bg-blush-50 dark:bg-ink-900">
+      <i data-lucide="palette" class="w-10 h-10 text-lav-600 mx-auto mb-3"></i>
+      <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-ink-800 dark:text-white mb-2">Can't Decide? Let's Chat.</h2>
+      <p class="font-semibold text-ink-700/70 dark:text-[#A8A2C0] max-w-xl mx-auto mb-6">Our theme consultants will help you pick â€” or design â€” the perfect set for your little one, free of charge.</p>
+      <a href="signup.html" class="cb-btn cb-btn-primary">Create a Free Account<i data-lucide="arrow-right" class="w-4 h-4 rtl:rotate-180"></i></a>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="js/main.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/gallery.js"></script>
+</body>
+</html>
+

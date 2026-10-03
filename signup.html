@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent Signup â€” CakeBloom</title>
+  <meta name="description" content="Create your CakeBloom parent account to book cake smash sessions, view proofs and order prints.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: {
+        colors: {
+          blush: {50:'#FDF2F9',100:'#FBE4F2',200:'#F8C9E6',300:'#F3A0D0',400:'#EA6CBB',500:'#D6249F',600:'#B81A82',700:'#94136A'},
+          lav: {100:'#FFF9E8',200:'#FFF1BF',300:'#FFE694',400:'#FFD23F',500:'#E5B40B',600:'#A87C00'},
+          butter: {100:'#FFF9E8',200:'#FFF1BF',300:'#FFE694',400:'#FFD23F',500:'#E5B40B',600:'#A87C00'},
+          minty: {100:'#ECFDF5',200:'#D1FAE5',300:'#A7F3D0',400:'#6EE7B7',500:'#34D399'},
+          cream: {50:'#FFFBEB',100:'#FEF3C7'},
+          ink: {700:'#4A4560',800:'#2A2444',900:'#1B1730',950:'#171330'},
+          pink: {50:'#FDF2F9',100:'#FBE4F2',200:'#F8C9E6',300:'#F3A0D0',400:'#EA6CBB',500:'#D6249F',600:'#B81A82',700:'#94136A'},
+          violet: {50:'#FFFDF7',100:'#FFF9E8',200:'#FFF1BF',300:'#FFE694',400:'#FFD23F',500:'#E5B40B',600:'#A87C00',700:'#7A5A00'},
+          fuchsia: {400:'#FF9EC4'},
+          sky: {50:'#FDF2F9',100:'#FBE4F2',200:'#F8C9E6',300:'#F3A0D0',400:'#EA6CBB',500:'#D6249F',600:'#B81A82',700:'#94136A'},
+        },
+        fontFamily: { display: ['Poppins','sans-serif'], body: ['Nunito','sans-serif'] },
+      } }
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@0.446.0/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    (function(){var t=localStorage.getItem('cakebloom_theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';localStorage.setItem('cakebloom_theme',t);}document.documentElement.classList.toggle('dark',t==='dark');document.documentElement.setAttribute('dir',localStorage.getItem('cakebloom_direction')||'ltr');})();
+  </script>
+</head>
+<body class="bg-blush-50 dark:bg-ink-900 text-ink-700 dark:text-[#D5D1E8] font-body min-h-screen" data-page="signup" data-auth="guest-only">
+  <div id="site-nav"></div>
+
+  <main class="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-lg">
+      <div class="text-center mb-8 anim-fade-up">
+        <a href="index.html" class="inline-flex items-center gap-2.5 mb-6">
+          <span class="w-11 h-11 rounded-2xl bg-pink-500 grid place-items-center text-white shadow-lg"><i data-lucide="cake" class="w-5 h-5"></i></span>
+          <span class="font-display font-bold text-2xl text-ink-800 dark:text-white">Cake<span class="text-gradient">Bloom</span></span>
+        </a>
+        <h1 class="font-display font-extrabold text-3xl text-ink-800 dark:text-white">Create Your Account</h1>
+        <p class="font-semibold text-ink-700/60 dark:text-[#A8A2C0] mt-1">Join CakeBloom to book sessions and treasure every moment</p>
+      </div>
+
+      <div class="cb-card p-7 sm:p-8 anim-fade-up delay-1">
+        <form id="signup-form" class="space-y-4" novalidate>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="cb-label" for="su-name">Parent Name</label>
+              <input id="su-name" class="cb-input" placeholder="Full name">
+              <p class="field-error text-xs font-bold text-rose-500 mt-1.5 hidden"></p>
+            </div>
+            <div>
+              <label class="cb-label" for="su-mobile">Mobile</label>
+              <input id="su-mobile" class="cb-input" placeholder="10-digit mobile" maxlength="10" inputmode="numeric">
+              <p class="field-error text-xs font-bold text-rose-500 mt-1.5 hidden"></p>
+            </div>
+          </div>
+          <div>
+            <label class="cb-label" for="su-email">Email</label>
+            <input id="su-email" type="email" class="cb-input" placeholder="you@example.com">
+            <p class="field-error text-xs font-bold text-rose-500 mt-1.5 hidden"></p>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="cb-label" for="su-password">Password</label>
+              <input id="su-password" type="password" class="cb-input" placeholder="Min. 6 characters">
+              <p class="field-error text-xs font-bold text-rose-500 mt-1.5 hidden"></p>
+            </div>
+            <div>
+              <label class="cb-label" for="su-confirm">Confirm Password</label>
+              <input id="su-confirm" type="password" class="cb-input" placeholder="Repeat password">
+              <p class="field-error text-xs font-bold text-rose-500 mt-1.5 hidden"></p>
+            </div>
+          </div>
+          <div class="border-t border-dashed border-pink-200 dark:border-white/10 pt-4">
+            <div class="text-xs font-extrabold text-blush-500 uppercase tracking-wide mb-3 flex items-center gap-1.5"><i data-lucide="baby" class="w-3.5 h-3.5"></i>Child Details</div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="cb-label" for="su-child">Child Name</label>
+                <input id="su-child" class="cb-input" placeholder="Your little one's name">
+                <p class="field-error text-xs font-bold text-rose-500 mt-1.5 hidden"></p>
+              </div>
+              <div>
+                <label class="cb-label" for="su-dob">Child Date of Birth</label>
+                <input id="su-dob" type="date" class="cb-input">
+                <p class="field-error text-xs font-bold text-rose-500 mt-1.5 hidden"></p>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="cb-btn cb-btn-primary w-full !py-3"><i data-lucide="user-plus" class="w-5 h-5"></i>Create Account</button>
+        </form>
+        <p class="text-center text-sm font-semibold text-ink-700/60 dark:text-[#A8A2C0] mt-6">
+          Already have an account? <a href="login.html" class="font-bold text-blush-500 hover:underline">Login</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="js/main.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
+

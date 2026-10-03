@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard â€” CakeBloom</title>
+  <meta name="description" content="CakeBloom admin dashboard â€” manage bookings, customers, packages, themes, slots, proofs, prints, payments and enquiries.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: {
+        colors: {
+          blush: {50:'#FDF2F9',100:'#FBE4F2',200:'#F8C9E6',300:'#F3A0D0',400:'#EA6CBB',500:'#D6249F',600:'#B81A82',700:'#94136A'},
+          lav: {100:'#FFF9E8',200:'#FFF1BF',300:'#FFE694',400:'#FFD23F',500:'#E5B40B',600:'#A87C00'},
+          butter: {100:'#FFF9E8',200:'#FFF1BF',300:'#FFE694',400:'#FFD23F',500:'#E5B40B',600:'#A87C00'},
+          minty: {100:'#ECFDF5',200:'#D1FAE5',300:'#A7F3D0',400:'#6EE7B7',500:'#34D399'},
+          cream: {50:'#FFFBEB',100:'#FEF3C7'},
+          ink: {700:'#4A4560',800:'#2A2444',900:'#1B1730',950:'#171330'},
+          pink: {50:'#FDF2F9',100:'#FBE4F2',200:'#F8C9E6',300:'#F3A0D0',400:'#EA6CBB',500:'#D6249F',600:'#B81A82',700:'#94136A'},
+          violet: {50:'#FFFDF7',100:'#FFF9E8',200:'#FFF1BF',300:'#FFE694',400:'#FFD23F',500:'#E5B40B',600:'#A87C00',700:'#7A5A00'},
+          fuchsia: {400:'#FF9EC4'},
+          sky: {50:'#FDF2F9',100:'#FBE4F2',200:'#F8C9E6',300:'#F3A0D0',400:'#EA6CBB',500:'#D6249F',600:'#B81A82',700:'#94136A'},
+        },
+        fontFamily: { display: ['Poppins','sans-serif'], body: ['Nunito','sans-serif'] },
+      } }
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@0.446.0/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    (function(){var t=localStorage.getItem('cakebloom_theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';localStorage.setItem('cakebloom_theme',t);}document.documentElement.classList.toggle('dark',t==='dark');document.documentElement.setAttribute('dir',localStorage.getItem('cakebloom_direction')||'ltr');})();
+  </script>
+</head>
+<body class="bg-lav-100/40 dark:bg-ink-950 text-ink-700 dark:text-[#D5D1E8] font-body" data-page="admin">
+  <div id="site-nav"></div>
+
+  <div id="drawer-overlay" class="hidden fixed inset-0 bg-black/40 z-[70] lg:hidden"></div>
+
+  <aside id="mobile-drawer" class="fixed inset-y-0 start-0 z-[80] w-72 max-w-[85vw] -translate-x-full rtl:translate-x-full lg:translate-x-0 transition-transform duration-300 bg-white dark:bg-ink-900 border-e border-pink-100 dark:border-white/10 overflow-y-auto shadow-2xl">
+    <div id="admin-sidebar"></div>
+  </aside>
+
+  <button id="drawer-btn" class="lg:hidden fixed bottom-5 start-5 z-[60] w-12 h-12 rounded-full bg-pink-500 text-white shadow-xl shadow-violet-300/50 grid place-items-center hover:scale-110 transition" aria-label="Open menu">
+    <i data-lucide="panel-left" class="w-5 h-5"></i>
+  </button>
+
+  <main id="admin-main" class="lg:ms-72 min-h-[calc(100vh-4rem)] px-4 sm:px-6 lg:px-8 py-8 pb-24 lg:pb-8"></main>
+
+  <div id="crud-modal" class="modal-backdrop hidden">
+    <div class="modal-panel modal-content"></div>
+  </div>
+
+  <div id="site-footer"></div>
+  <script src="js/main.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
+
