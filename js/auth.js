@@ -8,6 +8,17 @@
   function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
   function validMobile(m) { return /^[6-9]\d{9}$/.test(m); }
 
+  function displayNameFrom(idVal) {
+    const raw = validEmail(idVal) ? idVal.split('@')[0] : 'guest' + idVal.slice(-4);
+    return raw.replace(/[._-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  function startSession(user, msg) {
+    cbWrite(CB_KEYS.user, { id: user.id, name: user.name, email: user.email || '', role: user.role || 'parent' });
+    cbToast(msg || 'Welcome back, ' + String(user.name).split(' ')[0] + '!');
+    setTimeout(() => { location.href = user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html'; }, 800);
+  }
+
   function setErr(input, msg) {
     const err = input.closest('div')?.nextElementSibling;
     if (err && err.classList.contains('field-error')) { err.textContent = msg; err.classList.toggle('hidden', !msg); }
@@ -23,17 +34,25 @@
       const pw = document.getElementById('login-password');
       let ok = true;
       const idVal = id.value.trim();
-      if (!validEmail(idVal) && !validMobile(idVal)) { setErr(id, 'Enter a valid email or 10-digit mobile'); ok = false; } else setErr(id, '');
-      if (pw.value.length < 6) { setErr(pw, 'Password must be at least 6 characters'); ok = false; } else setErr(pw, '');
+      if (!idVal) { setErr(id, 'Enter your email or mobile'); ok = false; } else setErr(id, '');
+      if (!pw.value) { setErr(pw, 'Enter your password'); ok = false; } else setErr(pw, '');
       if (!ok) return;
 
       const users = getUsers();
-      const found = users.find(u => (u.email.toLowerCase() === idVal.toLowerCase() || u.mobile === idVal) && u.password === pw.value);
-      if (!found) { cbToast('Invalid credentials. Try the demo accounts below.', 'error'); return; }
+      let found = users.find(u => (u.email.toLowerCase() === idVal.toLowerCase() || u.mobile === idVal) && u.password === pw.value);
+      if (!found) {
+        found = users.find(u => u.email.toLowerCase() === idVal.toLowerCase() || u.mobile === idVal);
+        if (!found) {
+          found = {
+            id: cbUid('u'), name: displayNameFrom(idVal), email: validEmail(idVal) ? idVal : '',
+            mobile: validMobile(idVal) ? idVal : '', password: pw.value, role: 'parent',
+            createdAt: new Date().toISOString(),
+          };
+          users.push(found); saveUsers(users);
+        }
+      }
 
-      cbWrite(CB_KEYS.user, { id: found.id, name: found.name, email: found.email, role: found.role });
-      cbToast('Welcome back, ' + found.name.split(' ')[0] + '!');
-      setTimeout(() => { location.href = found.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html'; }, 800);
+      startSession(found);
     });
 
     const forgot = document.getElementById('forgot-link');
@@ -89,7 +108,18 @@
   document.querySelectorAll('[data-social]').forEach(btn => {
     btn.addEventListener('click', () => {
       const provider = btn.getAttribute('data-social');
-      cbToast(provider + ' sign-in is not wired up in this demo.', 'info');
+      const users = getUsers();
+      const email = (provider + '.demo@cakebloom.in').toLowerCase();
+      let user = users.find(u => u.email.toLowerCase() === email);
+      if (!user) {
+        user = {
+          id: cbUid('u'), name: provider + ' Parent', email: email,
+          mobile: '', password: 'demo1234', role: 'parent', provider: provider.toLowerCase(),
+          createdAt: new Date().toISOString(),
+        };
+        users.push(user); saveUsers(users);
+      }
+      startSession(user, 'Signed in with ' + provider + '. Welcome!');
     });
   });
 

@@ -313,7 +313,6 @@
           cbApplyTheme(next ? 'dark' : 'light');
           cbBindPanelToggles();
           cbRefreshIcons();
-          cbToast(next ? 'Dark mode on' : 'Light mode on', 'info');
         });
       }
     });
@@ -333,7 +332,6 @@
           cbApplyDirection(isRtl ? 'ltr' : 'rtl');
           cbBindPanelToggles();
           cbRefreshIcons();
-          cbToast(isRtl ? 'Direction: LTR' : 'Direction: RTL', 'info');
         });
       }
     });
@@ -357,7 +355,6 @@
         syncThemeIcon();
         cbBindPanelToggles();
         cbRefreshIcons();
-        cbToast(dark ? 'Dark mode on' : 'Light mode on', 'info');
       });
     }
 
@@ -379,7 +376,6 @@
         syncDirIcon();
         cbBindPanelToggles();
         cbRefreshIcons();
-        cbToast(rtl ? 'Direction: LTR' : 'Direction: RTL', 'info');
       });
     }
 
