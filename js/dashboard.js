@@ -1,4 +1,4 @@
-﻿/* CakeBloom â€” Parent Dashboard */
+﻿/* CakeBloom — Parent Dashboard */
 (function () {
   'use strict';
 
@@ -38,16 +38,31 @@
 
   const sidebar = document.getElementById('dash-sidebar');
   sidebar.innerHTML = `
-    <div class="p-4 border-b border-pink-100 dark:border-white/10">
-      <a href="index.html" class="flex items-center gap-3" aria-label="CakeBloom home">
-        <span class="w-11 h-11 rounded-2xl bg-pink-500 grid place-items-center text-white shrink-0"><i data-lucide="cake" class="w-6 h-6"></i></span>
-        <span class="font-display font-extrabold text-xl text-[#3B3654] dark:text-white">Cake<span class="text-gradient">Bloom</span></span>
-      </a>
-    </div>
-    <nav class="p-3 space-y-1" id="dash-nav">
-      ${SECTIONS.map(([id, label, ic]) => `<a href="dashboard.html#${id}" class="dash-link" data-sec="${id}"><i data-lucide="${ic}" class="w-[18px] h-[18px]"></i>${label}</a>`).join('')}
-      <button class="dash-link w-full text-rose-500" id="dash-logout"><i data-lucide="log-out" class="w-[18px] h-[18px]"></i>Logout</button>
-    </nav>`;
+    <div class="flex flex-col min-h-full">
+      <div class="p-4 border-b border-pink-100 dark:border-white/10 flex items-center justify-between gap-2">
+        <a href="index.html" class="flex items-center gap-3 min-w-0" aria-label="CakeBloom home">
+          <span class="w-11 h-11 rounded-2xl bg-pink-500 grid place-items-center text-white shrink-0"><i data-lucide="cake" class="w-5 h-5"></i></span>
+          <span class="font-display font-extrabold text-xl text-[#3B3654] dark:text-white truncate">Cake<span class="text-gradient">Bloom</span></span>
+        </a>
+        <button type="button" class="lg:hidden w-9 h-9 shrink-0 rounded-xl grid place-items-center text-ink-700 dark:text-[#D5D1E8] hover:bg-blush-50 dark:hover:bg-white/10 transition" data-drawer-close aria-label="Close menu">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <nav class="p-3 space-y-1 flex-1" id="dash-nav">
+        ${SECTIONS.map(([id, label, ic]) => `<a href="dashboard.html#${id}" class="dash-link" data-sec="${id}"><i data-lucide="${ic}" class="w-[18px] h-[18px]"></i>${label}</a>`).join('')}
+      </nav>
+      <div class="p-3 border-t border-pink-100 dark:border-white/10 space-y-2">
+        <div class="flex items-center justify-center gap-3 lg:hidden">
+          <button type="button" class="m-icon-btn" data-panel-dir aria-label="Toggle RTL/LTR" title="Toggle RTL/LTR">
+            <span data-dir-icon><i data-lucide="arrow-left-right" class="w-[18px] h-[18px]"></i></span>
+          </button>
+          <button type="button" class="m-icon-btn" data-panel-theme aria-label="Toggle dark/light" title="Toggle dark/light">
+            <span data-theme-icon><i data-lucide="moon" class="w-[18px] h-[18px]"></i></span>
+          </button>
+        </div>
+        <button class="dash-link w-full text-rose-500" id="dash-logout"><i data-lucide="log-out" class="w-[18px] h-[18px]"></i>Logout</button>
+      </div>
+    </div>`;
 
   const main = document.getElementById('dash-main');
   const unread = myNotifs().filter(n => !n.read).length;
@@ -105,7 +120,7 @@
         <div class="bg-pink-50 dark:bg-white/5 rounded-2xl p-4 flex items-center justify-between flex-wrap gap-3">
           <div>
             <div class="text-xs font-bold text-pink-400 uppercase tracking-wide">Payable on confirmation (50% advance)</div>
-            <div class="font-display font-bold text-2xl text-[#3B3654] dark:text-white" id="bk-amount">â€”</div>
+            <div class="font-display font-bold text-2xl text-[#3B3654] dark:text-white" id="bk-amount">—</div>
           </div>
           <button type="submit" class="cb-btn cb-btn-primary"><i data-lucide="circle-check" class="w-4 h-4"></i>Confirm Booking</button>
         </div>
@@ -207,18 +222,30 @@
   document.getElementById('quick-book').addEventListener('click', () => location.hash = 'book');
   window.addEventListener('hashchange', () => showSection(location.hash.slice(1)));
 
-  // Mobile drawer
+// Mobile / tablet drawer: hamburger in the header slides the sidebar in.
   const drawerBtn = document.getElementById('drawer-btn');
   const drawer = document.getElementById('mobile-drawer');
   const overlay = document.getElementById('drawer-overlay');
-  if (drawerBtn) drawerBtn.addEventListener('click', () => {
-    const isOpen = drawer.classList.toggle('is-open');
-    overlay.classList.toggle('hidden', !isOpen);
+  const setDrawer = (open) => {
+    drawer.classList.toggle('is-open', open);
+    overlay.classList.toggle('hidden', !open);
+    document.body.style.overflow = open ? 'hidden' : '';
+    drawerBtn.setAttribute('aria-expanded', String(open));
+    drawerBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    drawerBtn.innerHTML = `<i data-lucide="${open ? 'x' : 'menu'}" class="w-5 h-5"></i>`;
+    cbRefreshIcons();
+  };
+  if (drawerBtn) drawerBtn.addEventListener('click', () => setDrawer(!drawer.classList.contains('is-open')));
+  if (overlay) overlay.addEventListener('click', () => setDrawer(false));
+  drawer.querySelectorAll('[data-drawer-close]').forEach(b => b.addEventListener('click', () => setDrawer(false)));
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setDrawer(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('is-open')) setDrawer(false);
   });
-  if (overlay) overlay.addEventListener('click', () => {
-    drawer.classList.remove('is-open');
-    overlay.classList.add('hidden');
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
+    if (e.matches) setDrawer(false);
   });
+  cbBindPanelToggles(drawer);
   document.getElementById('dash-logout').addEventListener('click', () => { localStorage.removeItem(CB_KEYS.user); location.href = 'index.html'; });
 
   /* ---------------- Overview ---------------- */
@@ -249,7 +276,7 @@
             <span class="badge ${statusBadge(upcoming.status)}">${upcoming.status}</span>
           </div>
           <div class="text-sm font-semibold text-[#6B6585] dark:text-[#A8A2C0] mt-1 flex items-center gap-1.5"><i data-lucide="palette" class="w-4 h-4 text-violet-400"></i>${cbEscape(t?.name)} theme</div>
-          <div class="text-sm font-semibold text-[#6B6585] dark:text-[#A8A2C0] mt-1 flex items-center gap-1.5"><i data-lucide="calendar" class="w-4 h-4 text-pink-400"></i>${cbDate(upcoming.date)} Â· ${cbEscape(upcoming.time)}</div>
+          <div class="text-sm font-semibold text-[#6B6585] dark:text-[#A8A2C0] mt-1 flex items-center gap-1.5"><i data-lucide="calendar" class="w-4 h-4 text-pink-400"></i>${cbDate(upcoming.date)} · ${cbEscape(upcoming.time)}</div>
         </div>
       </div>`;
     })() : `<div class="text-center py-8">
@@ -266,7 +293,7 @@
         <div class="flex justify-between text-sm font-semibold"><span class="text-[#8B86A3]">Balance due at studio</span><span class="text-amber-500">${cbMoney(Math.max(total - paid, 0))}</span></div>
         <div class="border-t border-dashed border-pink-200 dark:border-white/10 pt-3 flex justify-between items-center">
           <span class="text-sm font-bold text-[#8B86A3]">Last payment</span>
-          <span class="badge ${statusBadge(lastPay.status)}">${lastPay.status} Â· ${cbMoney(lastPay.amount)}</span>
+          <span class="badge ${statusBadge(lastPay.status)}">${lastPay.status} · ${cbMoney(lastPay.amount)}</span>
         </div>
       </div>` : `<p class="font-semibold text-[#8B86A3]">No payments yet. Your first booking will generate an advance payment.</p>`;
     cbRefreshIcons();
@@ -283,7 +310,7 @@
 
     const dates = [...new Set(slots.filter(s => s.available).map(s => s.date))].sort();
     dateSel.innerHTML = dates.map(d => `<option value="${d}">${cbDate(d)}</option>`).join('');
-    pkgSel.innerHTML = packages.map(p => `<option value="${p.id}">${cbEscape(p.name)} â€” ${cbMoney(p.price)}</option>`).join('');
+    pkgSel.innerHTML = packages.map(p => `<option value="${p.id}">${cbEscape(p.name)} — ${cbMoney(p.price)}</option>`).join('');
     thSel.innerHTML = themes.map(t => `<option value="${t.id}">${cbEscape(t.name)}</option>`).join('');
 
     function renderSlots() {
@@ -301,7 +328,7 @@
     }
     function updateAmount() {
       const p = pkgById(pkgSel.value);
-      amountEl.textContent = p ? cbMoney(Math.round(p.price * 0.5)) : 'â€”';
+      amountEl.textContent = p ? cbMoney(Math.round(p.price * 0.5)) : '—';
     }
     dateSel.addEventListener('change', renderSlots);
     pkgSel.addEventListener('change', updateAmount);
@@ -376,7 +403,7 @@
           </div>
           <p class="text-sm font-semibold text-[#6B6585] dark:text-[#A8A2C0] mb-4">${cbEscape(p.description)}</p>
           <ul class="text-sm font-semibold text-[#55506E] dark:text-[#C6C1DA] space-y-2">
-            <li class="flex gap-2"><i data-lucide="clock" class="w-4 h-4 text-pink-400 mt-0.5"></i>${cbEscape(p.duration)} Â· ${p.photos} edited photos</li>
+            <li class="flex gap-2"><i data-lucide="clock" class="w-4 h-4 text-pink-400 mt-0.5"></i>${cbEscape(p.duration)} · ${p.photos} edited photos</li>
             <li class="flex gap-2"><i data-lucide="image" class="w-4 h-4 text-violet-400 mt-0.5"></i>${cbEscape(p.backdrop)}</li>
             <li class="flex gap-2"><i data-lucide="cake" class="w-4 h-4 text-sky-400 mt-0.5"></i>${cbEscape(p.cake)}</li>
             <li class="flex gap-2"><i data-lucide="wand-sparkles" class="w-4 h-4 text-emerald-400 mt-0.5"></i>${cbEscape(p.props)}</li>
@@ -437,10 +464,10 @@
 
   /* ---------------- Print Orders ---------------- */
   const PRODUCTS = [
-    { id: 'std', name: 'Standard Prints', desc: '6Ã—4 inch glossy prints', price: 49, img: 'assets/images/photos/gal-smash-1.jpg', unit: 'print' },
-    { id: 'enl', name: 'Enlargements', desc: '12Ã—18 inch premium prints', price: 499, img: 'assets/images/photos/gal-birthday-1.jpg', unit: 'print' },
+    { id: 'std', name: 'Standard Prints', desc: '6×4 inch glossy prints', price: 49, img: 'assets/images/photos/gal-smash-1.jpg', unit: 'print' },
+    { id: 'enl', name: 'Enlargements', desc: '12×18 inch premium prints', price: 499, img: 'assets/images/photos/gal-birthday-1.jpg', unit: 'print' },
     { id: 'alb', name: 'Photo Album', desc: '20-page linen hardcover album', price: 2499, img: 'assets/images/photos/h2-gallery-2-family-first.jpg', unit: 'album' },
-    { id: 'cnv', name: 'Canvas Print', desc: '16Ã—20 inch gallery canvas', price: 1899, img: 'assets/images/photos/h2-gallery-1-tiny-portraits.jpg', unit: 'canvas' },
+    { id: 'cnv', name: 'Canvas Print', desc: '16×20 inch gallery canvas', price: 1899, img: 'assets/images/photos/h2-gallery-1-tiny-portraits.jpg', unit: 'canvas' },
     { id: 'dig', name: 'Digital Package', desc: 'All edited photos in HD + web', price: 1499, img: 'assets/images/photos/h2-gallery-3-birthday-joy.jpg', unit: 'package' },
   ];
   function renderPrints() {
@@ -468,7 +495,7 @@
         price: p.price * qty, status: 'Processing', date: new Date().toISOString(),
       });
       cbWrite(CB_KEYS.prints, prints);
-      cbToast(`${qty} Ã— ${p.name} ordered`);
+      cbToast(`${qty} × ${p.name} ordered`);
       renderPrints();
     }));
 
@@ -518,7 +545,7 @@
           </div>
           <div class="space-y-2.5 text-sm font-semibold">
             <div class="flex justify-between"><span class="text-[#8B86A3]">Payment ID</span><span class="text-[#3B3654] dark:text-white">${pay.txnId}</span></div>
-            <div class="flex justify-between"><span class="text-[#8B86A3]">Booking</span><span class="text-[#3B3654] dark:text-white">#${bk?.id.slice(-6).toUpperCase()} Â· ${cbEscape(pkgById(bk?.packageId)?.name || '')}</span></div>
+            <div class="flex justify-between"><span class="text-[#8B86A3]">Booking</span><span class="text-[#3B3654] dark:text-white">#${bk?.id.slice(-6).toUpperCase()} · ${cbEscape(pkgById(bk?.packageId)?.name || '')}</span></div>
             <div class="flex justify-between"><span class="text-[#8B86A3]">Date</span><span class="text-[#3B3654] dark:text-white">${cbDateTime(pay.date)}</span></div>
             <div class="flex justify-between"><span class="text-[#8B86A3]">Method</span><span class="text-[#3B3654] dark:text-white">${cbEscape(pay.method)}</span></div>
             <div class="flex justify-between"><span class="text-[#8B86A3]">Status</span><span class="badge ${statusBadge(pay.status)}">${pay.status}</span></div>

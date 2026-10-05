@@ -2,7 +2,9 @@
 (function () {
   'use strict';
 
-  const user = cbUser();
+  // Let visitors explore the admin dashboard without signing in by using
+  // the seeded demo admin when there is no active session.
+  const user = cbUser() || cbRead(CB_KEYS.users, []).find(u => u.role === 'admin');
   if (!user || user.role !== 'admin') { location.href = 'login.html'; return; }
 
   const read = k => cbRead(k, []);
@@ -20,24 +22,40 @@
     ['overview', 'Overview', 'layout-dashboard'], ['bookings', 'Bookings', 'calendar-days'],
     ['customers', 'Customers', 'users'], ['packages', 'Packages', 'gift'],
     ['themes', 'Themes', 'palette'], ['slots', 'Session Slots', 'clock'],
-    ['proofs', 'Proof Galleries', 'images'], ['prints', 'Print Orders', 'printer'],
     ['payments', 'Payments', 'wallet'], ['enquiries', 'Enquiries', 'mail'],
     ['settings', 'Settings', 'settings'],
   ];
 
   const sidebar = document.getElementById('admin-sidebar');
   sidebar.innerHTML = `
-    <div class="p-4 border-b border-pink-100 dark:border-white/10 flex items-center gap-3">
-      <span class="w-11 h-11 rounded-2xl bg-pink-500 grid place-items-center text-white"><i data-lucide="shield-check" class="w-5 h-5"></i></span>
-      <div>
-        <div class="font-display font-bold text-[#3B3654] dark:text-white">Studio Admin</div>
-        <div class="text-xs font-semibold text-[#8B86A3]">CakeBloom Control Center</div>
+    <div class="flex flex-col min-h-full">
+      <div class="p-4 border-b border-pink-100 dark:border-white/10 flex items-center justify-between gap-2">
+        <a href="index.html" class="flex items-center gap-3 min-w-0" aria-label="CakeBloom home">
+          <span class="w-11 h-11 rounded-2xl bg-pink-500 grid place-items-center text-white shrink-0"><i data-lucide="cake" class="w-5 h-5"></i></span>
+          <span class="min-w-0">
+            <span class="font-display font-extrabold text-xl text-[#3B3654] dark:text-white">Cake<span class="text-gradient">Bloom</span></span>
+            <span class="block text-xs font-semibold text-[#8B86A3] truncate">Studio Admin · Control Center</span>
+          </span>
+        </a>
+        <button type="button" class="lg:hidden w-9 h-9 shrink-0 rounded-xl grid place-items-center text-ink-700 dark:text-[#D5D1E8] hover:bg-blush-50 dark:hover:bg-white/10 transition" data-drawer-close aria-label="Close menu">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
-    </div>
-    <nav class="p-3 space-y-1" id="admin-nav">
-      ${SECTIONS.map(([id, label, ic]) => `<a href="admin-dashboard.html#${id}" class="dash-link" data-sec="${id}"><i data-lucide="${ic}" class="w-[18px] h-[18px]"></i>${label}</a>`).join('')}
-      <button class="dash-link w-full text-rose-500" id="admin-logout"><i data-lucide="log-out" class="w-[18px] h-[18px]"></i>Logout</button>
-    </nav>`;
+      <nav class="p-3 space-y-1 flex-1" id="admin-nav">
+        ${SECTIONS.map(([id, label, ic]) => `<a href="admin-dashboard.html#${id}" class="dash-link" data-sec="${id}"><i data-lucide="${ic}" class="w-[18px] h-[18px]"></i>${label}</a>`).join('')}
+      </nav>
+      <div class="p-3 border-t border-pink-100 dark:border-white/10 space-y-2">
+        <div class="flex items-center justify-center gap-3 lg:hidden">
+          <button type="button" class="m-icon-btn" data-panel-dir aria-label="Toggle RTL/LTR" title="Toggle RTL/LTR">
+            <span data-dir-icon><i data-lucide="arrow-left-right" class="w-[18px] h-[18px]"></i></span>
+          </button>
+          <button type="button" class="m-icon-btn" data-panel-theme aria-label="Toggle dark/light" title="Toggle dark/light">
+            <span data-theme-icon><i data-lucide="moon" class="w-[18px] h-[18px]"></i></span>
+          </button>
+        </div>
+        <button class="dash-link w-full text-rose-500" id="admin-logout"><i data-lucide="log-out" class="w-[18px] h-[18px]"></i>Logout</button>
+      </div>
+    </div>`;
 
   const main = document.getElementById('admin-main');
   main.innerHTML = `
@@ -50,15 +68,54 @@
 
   <section id="sec-overview" class="dash-sec space-y-6">
     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" id="ad-stats"></div>
+    <div class="grid gap-6 lg:grid-cols-3">
+      <div class="cb-card p-6 lg:col-span-2">
+        <div class="flex items-center justify-between gap-3 mb-1">
+          <h3 class="font-display font-bold text-lg text-[#3B3654] dark:text-white">Revenue Trend</h3>
+          <div class="text-xs font-bold text-[#8B86A3]" id="ad-rev-caption"></div>
+        </div>
+        <p class="text-sm font-semibold text-[#8B86A3] mb-5">Collected payments grouped by month, with this month's total highlighted.</p>
+        <div id="ad-revenue" class="flex items-end gap-2 sm:gap-3 h-48"></div>
+      </div>
+      <div class="cb-card p-6">
+        <h3 class="font-display font-bold text-lg text-[#3B3654] dark:text-white mb-1">Booking Status</h3>
+        <p class="text-sm font-semibold text-[#8B86A3] mb-5">Where every booking currently stands.</p>
+        <div class="space-y-4" id="ad-status-mix"></div>
+      </div>
+    </div>
+    <div class="grid gap-6 lg:grid-cols-3">
+      <div class="cb-card p-6">
+        <h3 class="font-display font-bold text-lg text-[#3B3654] dark:text-white mb-1">Top Packages</h3>
+        <p class="text-sm font-semibold text-[#8B86A3] mb-5">Most booked packages this quarter.</p>
+        <div class="space-y-3" id="ad-top-pkgs"></div>
+      </div>
+      <div class="cb-card p-6">
+        <h3 class="font-display font-bold text-lg text-[#3B3654] dark:text-white mb-1">Today's Schedule</h3>
+        <p class="text-sm font-semibold text-[#8B86A3] mb-5" id="ad-today-sub">Sessions on the books, starting today.</p>
+        <div class="space-y-3" id="ad-today"></div>
+      </div>
+      <div class="cb-card p-6">
+        <h3 class="font-display font-bold text-lg text-[#3B3654] dark:text-white mb-1">Recent Activity</h3>
+        <p class="text-sm font-semibold text-[#8B86A3] mb-5">Latest bookings, payments and enquiries.</p>
+        <div class="space-y-3" id="ad-activity"></div>
+      </div>
+    </div>
     <div class="grid gap-6 lg:grid-cols-2">
       <div class="cb-card p-6">
-        <h3 class="font-display font-bold text-lg text-[#3B3654] dark:text-white mb-4">Upcoming Sessions</h3>
+        <h3 class="font-display font-bold text-lg text-[#3B3654] dark:text-white mb-1">Upcoming Sessions</h3>
+        <p class="text-sm font-semibold text-[#8B86A3] mb-5">The next confirmed dates on the calendar.</p>
         <div class="space-y-3" id="ad-upcoming"></div>
       </div>
       <div class="cb-card p-6">
-        <h3 class="font-display font-bold text-lg text-[#3B3654] dark:text-white mb-4">Recent Payments</h3>
+        <h3 class="font-display font-bold text-lg text-[#3B3654] dark:text-white mb-1">Recent Payments</h3>
+        <p class="text-sm font-semibold text-[#8B86A3] mb-5">Latest transactions across all methods.</p>
         <div class="space-y-3" id="ad-recent-pay"></div>
       </div>
+    </div>
+    <div class="cb-card p-6">
+      <h3 class="font-display font-bold text-lg text-[#3B3654] dark:text-white mb-1">Attention Needed</h3>
+      <p class="text-sm font-semibold text-[#8B86A3] mb-5">Open tasks that are waiting on the studio team.</p>
+      <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" id="ad-tasks"></div>
     </div>
   </section>
 
@@ -174,7 +231,12 @@
     document.getElementById('sec-' + id).classList.remove('hidden');
     document.querySelectorAll('#admin-nav .dash-link').forEach(a => a.classList.toggle('active', a.getAttribute('data-sec') === id));
     document.getElementById('admin-title').textContent = titles[id];
-    ({ overview: renderOverview, bookings: renderBookings, customers: renderCustomers, packages: renderPackages, themes: renderThemes, slots: renderSlots, proofs: renderProofs, prints: renderPrints, payments: renderPayments, enquiries: renderEnquiries }[id] || (() => {}))();
+    try {
+      ({ overview: renderOverview, bookings: renderBookings, customers: renderCustomers, packages: renderPackages, themes: renderThemes, slots: renderSlots, proofs: renderProofs, prints: renderPrints, payments: renderPayments, enquiries: renderEnquiries }[id] || (() => {}))();
+    } catch (err) {
+      console.error('[CakeBloom] failed to render section ' + id, err);
+      cbToast('Could not fully render this panel. Check the console.', 'error');
+    }
     cbRefreshIcons();
   }
   document.getElementById('admin-nav').addEventListener('click', (e) => {
@@ -184,33 +246,199 @@
   window.addEventListener('hashchange', () => showSection(location.hash.slice(1)));
   document.getElementById('admin-logout').addEventListener('click', () => { localStorage.removeItem(CB_KEYS.user); location.href = 'index.html'; });
 
-  // Mobile drawer
+  // Mobile / tablet drawer: hamburger in the header slides the sidebar in.
   const drawerBtn = document.getElementById('drawer-btn');
   const drawer = document.getElementById('mobile-drawer');
   const overlay = document.getElementById('drawer-overlay');
-  if (drawerBtn) drawerBtn.addEventListener('click', () => { drawer.classList.toggle('hidden'); overlay.classList.toggle('hidden'); });
-  if (overlay) overlay.addEventListener('click', () => { drawer.classList.add('hidden'); overlay.classList.add('hidden'); });
+  const setDrawer = (open) => {
+    drawer.classList.toggle('is-open', open);
+    overlay.classList.toggle('hidden', !open);
+    document.body.style.overflow = open ? 'hidden' : '';
+    drawerBtn.setAttribute('aria-expanded', String(open));
+    drawerBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    drawerBtn.innerHTML = `<i data-lucide="${open ? 'x' : 'menu'}" class="w-5 h-5"></i>`;
+    cbRefreshIcons();
+  };
+  if (drawerBtn) drawerBtn.addEventListener('click', () => setDrawer(!drawer.classList.contains('is-open')));
+  if (overlay) overlay.addEventListener('click', () => setDrawer(false));
+  drawer.querySelectorAll('[data-drawer-close]').forEach(b => b.addEventListener('click', () => setDrawer(false)));
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setDrawer(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('is-open')) setDrawer(false);
+  });
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
+    if (e.matches) setDrawer(false);
+  });
+  cbBindPanelToggles(drawer);
 
   /* ---------------- Overview ---------------- */
+  const todayISO = () => new Date().toISOString().slice(0, 10);
+  const monthLabel = (y, m) => new Date(y, m, 1).toLocaleDateString('en-IN', { month: 'short' });
+  const relTime = (d) => {
+    const diff = Math.round((Date.now() - new Date(d).getTime()) / 86400000);
+    if (diff <= 0) return 'Today';
+    if (diff === 1) return 'Yesterday';
+    if (diff < 30) return diff + ' days ago';
+    return cbDate(d);
+  };
+
   function renderOverview() {
     const revenue = payments.filter(p => p.status === 'Paid').reduce((s, p) => s + p.amount, 0);
     const upcoming = bookings.filter(b => b.status === 'confirmed').sort((a, b) => a.date.localeCompare(b.date));
+    const bookedSlots = slots.filter(s => !s.available).length;
+    const openEnquiries = enquiries.filter(q => q.status === 'New').length;
+    const unpaid = payments.filter(p => p.status === 'Unpaid');
     const stats = [
-      { label: 'Total Bookings', value: bookings.length, icon: 'calendar-days', color: 'text-pink-400' },
-      { label: 'Upcoming Sessions', value: upcoming.length, icon: 'calendar-heart', color: 'text-violet-400' },
-      { label: 'Customers', value: parents.length, icon: 'users', color: 'text-sky-400' },
-      { label: 'Completed Sessions', value: bookings.filter(b => b.status === 'completed').length, icon: 'circle-check', color: 'text-emerald-400' },
-      { label: 'Pending Payments', value: payments.filter(p => p.status === 'Unpaid').length, icon: 'wallet', color: 'text-amber-400' },
-      { label: 'Print Orders', value: prints.length, icon: 'printer', color: 'text-rose-400' },
-      { label: 'Revenue', value: cbMoney(revenue), icon: 'indian-rupee', color: 'text-emerald-400' },
+      { label: 'Total Bookings', value: bookings.length, icon: 'calendar-days', color: 'text-pink-400', note: `${bookings.filter(b => b.status === 'pending').length} awaiting confirmation` },
+      { label: 'Upcoming Sessions', value: upcoming.length, icon: 'calendar-heart', color: 'text-violet-400', note: `Next on ${upcoming.length ? cbDate(upcoming[0].date) : '—'}` },
+      { label: 'Customers', value: parents.length, icon: 'users', color: 'text-sky-400', note: `${parents.filter(u => bookings.filter(b => b.userId === u.id).length > 1).length} returning families` },
+      { label: 'Completed Sessions', value: bookings.filter(b => b.status === 'completed').length, icon: 'circle-check', color: 'text-emerald-400', note: 'Proofs delivered' },
+      { label: 'Pending Payments', value: unpaid.length, icon: 'wallet', color: 'text-amber-400', note: `${cbMoney(unpaid.reduce((s, p) => s + p.amount, 0))} outstanding` },
+      { label: 'Print Orders', value: prints.length, icon: 'printer', color: 'text-rose-400', note: `${prints.filter(p => p.status !== 'Delivered').length} in production` },
+      { label: 'Revenue', value: cbMoney(revenue), icon: 'indian-rupee', color: 'text-emerald-400', note: 'Collected to date' },
+      { label: 'Slot Utilisation', value: slots.length ? Math.round(bookedSlots / slots.length * 100) + '%' : '0%', icon: 'gauge', color: 'text-lav-400', note: `${bookedSlots} of ${slots.length} slots taken` },
     ];
     document.getElementById('ad-stats').innerHTML = stats.map(c => `
-      <div class="stat-card flex items-center gap-4">
-        <span class="w-12 h-12 rounded-2xl bg-pink-50 dark:bg-white/10 grid place-items-center"><i data-lucide="${c.icon}" class="w-6 h-6 ${c.color}"></i></span>
-        <div><div class="font-display font-bold text-xl text-[#3B3654] dark:text-white">${c.value}</div><div class="text-xs font-bold text-[#8B86A3]">${c.label}</div></div>
+      <div class="stat-card">
+        <div class="flex items-center gap-4">
+          <span class="w-12 h-12 rounded-2xl bg-pink-50 dark:bg-white/10 grid place-items-center shrink-0"><i data-lucide="${c.icon}" class="w-6 h-6 ${c.color}"></i></span>
+          <div class="min-w-0">
+            <div class="font-display font-bold text-xl text-[#3B3654] dark:text-white truncate">${c.value}</div>
+            <div class="text-xs font-bold text-[#8B86A3]">${c.label}</div>
+          </div>
+        </div>
+        <div class="text-[11px] font-semibold text-[#8B86A3] mt-2 truncate">${c.note}</div>
       </div>`).join('');
 
-    document.getElementById('ad-upcoming').innerHTML = upcoming.length ? upcoming.slice(0, 5).map(b => {
+    /* Revenue trend — last 6 months, with SVG bars and a value axis */
+    const now = new Date();
+    const months = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+      const rows = payments.filter(p => p.status === 'Paid' && String(p.date).startsWith(key));
+      months.push({
+        label: monthLabel(d.getFullYear(), d.getMonth()),
+        total: rows.reduce((s, p) => s + p.amount, 0),
+        count: rows.length,
+        current: i === 0,
+      });
+    }
+    const peak = Math.max(1, ...months.map(m => m.total));
+    const ticks = [peak, peak / 2, 0].map(v => cbMoney(Math.round(v)));
+    const grand = months.reduce((s, m) => s + m.total, 0);
+    const best = months.reduce((a, b) => (b.total > a.total ? b : a), months[0]);
+    document.getElementById('ad-rev-caption').textContent =
+      'Last 6 months ' + cbMoney(grand) + ' · best ' + best.label + ' ' + cbMoney(best.total);
+    document.getElementById('ad-revenue').innerHTML = `
+      <div class="flex gap-3 h-48">
+        <div class="flex flex-col justify-between text-[10px] font-bold text-[#8B86A3] text-end shrink-0 h-full pb-6">
+          ${ticks.map(t => `<span class="leading-none">${t}</span>`).join('')}
+        </div>
+        <div class="relative flex-1 min-w-0">
+          <div class="absolute inset-x-0 top-0 border-t border-dashed border-pink-100 dark:border-white/10"></div>
+          <div class="absolute inset-x-0 top-1/2 border-t border-dashed border-pink-100 dark:border-white/10"></div>
+          <div class="absolute inset-x-0 bottom-6 border-t border-dashed border-pink-100 dark:border-white/10"></div>
+          <div class="absolute inset-0 flex items-end gap-2 sm:gap-3 pb-6">
+            ${months.map(m => `
+              <div class="flex-1 h-full flex flex-col justify-end items-center gap-1.5 min-w-0 group">
+                <span class="text-[10px] font-bold text-[#3B3654] dark:text-white opacity-0 group-hover:opacity-100 transition truncate">${cbMoney(m.total)}</span>
+                <div class="w-full rounded-t-lg ${m.current ? 'bg-pink-500' : 'bg-pink-200 dark:bg-white/15'} group-hover:bg-pink-400 transition" style="height:${Math.max(3, Math.round(m.total / peak * 100))}%"></div>
+              </div>`).join('')}
+          </div>
+          <div class="absolute inset-x-0 bottom-0 flex gap-2 sm:gap-3">
+            ${months.map(m => `<div class="flex-1 text-center text-[11px] font-bold ${m.current ? 'text-pink-500' : 'text-[#8B86A3]'}">${m.label}</div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+
+    /* Booking status mix */
+    const mix = ['confirmed', 'pending', 'completed', 'cancelled'].map(s => ({
+      s, n: bookings.filter(b => b.status === s).length,
+      pct: bookings.length ? Math.round(bookings.filter(b => b.status === s).length / bookings.length * 100) : 0,
+    }));
+    document.getElementById('ad-status-mix').innerHTML = mix.map(m => `
+      <div>
+        <div class="flex items-center justify-between text-sm mb-1.5">
+          <span class="badge ${statusBadge(m.s)}">${m.s[0].toUpperCase() + m.s.slice(1)}</span>
+          <span class="font-bold text-[#3B3654] dark:text-white">${m.n} · ${m.pct}%</span>
+        </div>
+        <div class="h-2 rounded-full bg-pink-50 dark:bg-white/10 overflow-hidden">
+          <div class="h-full rounded-full bg-pink-500" style="width:${m.pct}%"></div>
+        </div>
+      </div>`).join('');
+
+    /* Top packages */
+    const pkgStats = packages.map(p => ({ p, n: bookings.filter(b => b.packageId === p.id).length }))
+      .sort((a, b) => b.n - a.n);
+    const topMax = Math.max(1, ...pkgStats.map(s => s.n));
+    document.getElementById('ad-top-pkgs').innerHTML = pkgStats.slice(0, 6).map(({ p, n }) => `
+      <div>
+        <div class="flex items-center gap-3 mb-1.5">
+          <img src="${p.image}" class="w-9 h-9 rounded-lg object-cover" alt="">
+          <span class="flex-1 min-w-0 text-sm font-bold text-[#3B3654] dark:text-white truncate">${cbEscape(p.name)}</span>
+          <span class="text-xs font-bold text-[#8B86A3]">${n}</span>
+        </div>
+        <div class="h-1.5 rounded-full bg-pink-50 dark:bg-white/10 overflow-hidden">
+          <div class="h-full rounded-full bg-pink-400" style="width:${Math.round(n / topMax * 100)}%"></div>
+        </div>
+      </div>`).join('');
+
+    /* Today — falls back to the next days so the panel is never blank */
+    const today = todayISO();
+    const dayList = bookings.filter(b => b.date >= today && b.status === 'confirmed')
+      .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+    const dayRows = (dayList.length ? dayList : upcoming).slice(0, 6);
+    const dayTitle = dayList.length ? 'Sessions on the books, starting today.' : 'Nothing left today — here is what is coming next.';
+    document.getElementById('ad-today-sub').textContent = dayTitle;
+    document.getElementById('ad-today').innerHTML = dayRows.length ? dayRows.map(b => {
+      const u = userById(b.userId), p = pkgById(b.packageId);
+      const when = b.date === today ? 'Today' : cbDate(b.date);
+      return `<div class="flex items-center gap-3 p-3 rounded-2xl bg-violet-50/60 dark:bg-white/5">
+        <span class="badge ${b.date === today ? 'badge-pink' : 'badge-blue'} whitespace-nowrap">${cbEscape(when)} · ${cbEscape(b.time)}</span>
+        <div class="min-w-0 flex-1">
+          <div class="font-bold text-sm text-[#3B3654] dark:text-white truncate">${cbEscape(u?.name || 'Parent')} — ${cbEscape(p?.name || '')}</div>
+          <div class="text-xs font-semibold text-[#8B86A3] truncate">${cbEscape(u?.childName || 'Little one')} · ${cbEscape(thById(b.themeId)?.name || '')} theme</div>
+        </div>
+        <span class="badge ${statusBadge(b.status)} shrink-0">${b.status}</span>
+      </div>`;
+    }).join('') : '<p class="font-semibold text-[#8B86A3] text-sm">No upcoming sessions on the calendar.</p>';
+
+    /* Activity feed */
+    const feed = [
+      ...bookings.map(b => ({ d: b.createdAt, t: 'Booking', s: `${userById(b.userId)?.name || 'Parent'} booked ${pkgById(b.packageId)?.name || 'a session'}`, i: 'calendar-plus' })),
+      ...payments.map(p => ({ d: p.date, t: 'Payment', s: `${cbMoney(p.amount)} via ${p.method} — ${p.status}`, i: 'indian-rupee' })),
+      ...enquiries.map(q => ({ d: q.date, t: 'Enquiry', s: `${q.name} wrote in about a session`, i: 'mail' })),
+      ...prints.map(o => ({ d: o.createdAt || todayISO(), t: 'Print', s: `${userById(o.userId)?.name || 'Parent'} ordered ${o.type}`, i: 'printer' })),
+    ].sort((a, b) => String(b.d).localeCompare(String(a.d))).slice(0, 7);
+    document.getElementById('ad-activity').innerHTML = feed.map(f => `
+      <div class="flex items-start gap-3">
+        <span class="w-8 h-8 rounded-xl bg-pink-50 dark:bg-white/10 grid place-items-center shrink-0"><i data-lucide="${f.i}" class="w-4 h-4 text-pink-400"></i></span>
+        <div class="min-w-0">
+          <div class="text-sm font-bold text-[#3B3654] dark:text-white">${cbEscape(f.s)}</div>
+          <div class="text-xs font-semibold text-[#8B86A3]">${f.t} · ${relTime(f.d)}</div>
+        </div>
+      </div>`).join('');
+
+    /* Attention needed */
+    const tasks = [
+      { label: 'Advance pending', n: bookings.filter(b => b.status === 'pending').length, note: 'Bookings without a 50% advance', i: 'circle-alert', tone: 'text-amber-400', sec: 'bookings' },
+      { label: 'Balances unpaid', n: unpaid.length, note: cbMoney(unpaid.reduce((s, p) => s + p.amount, 0)) + ' outstanding', i: 'wallet', tone: 'text-rose-400', sec: 'payments' },
+      { label: 'New enquiries', n: openEnquiries, note: 'Waiting for a reply', i: 'mail', tone: 'text-pink-400', sec: 'enquiries' },
+      { label: 'Prints in production', n: prints.filter(p => p.status !== 'Delivered').length, note: 'Being framed or printed', i: 'printer', tone: 'text-violet-400', sec: 'prints' },
+    ];
+    document.getElementById('ad-tasks').innerHTML = tasks.map(t => `
+      <button class="text-start p-4 rounded-2xl bg-pink-50/60 dark:bg-white/5 hover:bg-pink-100/60 dark:hover:bg-white/10 transition" data-goto="${t.sec}">
+        <div class="flex items-center gap-3">
+          <i data-lucide="${t.i}" class="w-5 h-5 ${t.tone} shrink-0"></i>
+          <span class="font-display font-bold text-xl text-[#3B3654] dark:text-white">${t.n}</span>
+        </div>
+        <div class="font-bold text-sm text-[#3B3654] dark:text-white mt-2">${t.label}</div>
+        <div class="text-xs font-semibold text-[#8B86A3]">${t.note}</div>
+      </button>`).join('');
+    document.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click', () => { location.hash = b.getAttribute('data-goto'); }));
+
+    document.getElementById('ad-upcoming').innerHTML = upcoming.length ? upcoming.slice(0, 6).map(b => {
       const u = userById(b.userId), p = pkgById(b.packageId);
       return `<div class="flex items-center gap-3 p-3 rounded-2xl bg-pink-50/60 dark:bg-white/5">
         <img src="${p?.image}" class="w-12 h-12 rounded-xl object-cover" alt="">
@@ -222,13 +450,13 @@
       </div>`;
     }).join('') : '<p class="font-semibold text-[#8B86A3] text-sm">No upcoming sessions.</p>';
 
-    document.getElementById('ad-recent-pay').innerHTML = payments.length ? payments.slice(0, 5).map(p => `
+    document.getElementById('ad-recent-pay').innerHTML = payments.length ? payments.slice(0, 6).map(p => `
       <div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-violet-50/60 dark:bg-white/5">
-        <div>
-          <div class="font-bold text-sm text-[#3B3654] dark:text-white">${p.txnId}</div>
+        <div class="min-w-0">
+          <div class="font-bold text-sm text-[#3B3654] dark:text-white truncate">${p.txnId}</div>
           <div class="text-xs font-semibold text-[#8B86A3]">${cbDate(p.date)} · ${cbEscape(p.method)}</div>
         </div>
-        <div class="text-end">
+        <div class="text-end shrink-0">
           <div class="font-display font-bold text-[#3B3654] dark:text-white">${cbMoney(p.amount)}</div>
           <span class="badge ${statusBadge(p.status)}">${p.status}</span>
         </div>

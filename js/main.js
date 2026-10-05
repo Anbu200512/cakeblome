@@ -18,6 +18,7 @@
 
   function iso(d) { return d.toISOString().slice(0, 10); }
   function addDays(n) { const d = new Date(); d.setDate(d.getDate() + n); return d; }
+  function todayISO2() { return iso(new Date()); }
 
   function seed() {
     if (localStorage.getItem('cakebloom_seeded')) return;
@@ -73,7 +74,7 @@
     ];
 
     const bookings = [
-      { id: 'bk-1', userId: 'u-parent', packageId: 'pkg-1', themeId: 'th-1', date: iso(addDays(6)), time: '10:30 AM', status: 'Confirmed', notes: 'Aarav loves pink and sparkles!', createdAt: iso(addDays(-10)) },
+      { id: 'bk-1', userId: 'u-parent', packageId: 'pkg-1', themeId: 'th-1', date: iso(addDays(6)), time: '10:30 AM', status: 'confirmed', notes: 'Aarav loves pink and sparkles!', createdAt: iso(addDays(-10)) },
     ];
 
     const payments = [
@@ -92,6 +93,155 @@
     localStorage.setItem('cakebloom_seeded', '1');
   }
   window.cbSeed = seed;
+
+  /* ---------------- Seed upgrade: richer admin demo data ---------------- */
+  const upgradeFlag = 'cakebloom_seed_v2';
+  function upgradeSeed() {
+    if (localStorage.getItem(upgradeFlag)) return;
+
+    const addUnique = (key, rows) => {
+      const cur = read(key, []);
+      const ids = new Set(cur.map(r => r.id));
+      const fresh = rows.filter(r => !ids.has(r.id));
+      if (fresh.length) write(key, cur.concat(fresh));
+    };
+
+    addUnique(K.users, [
+      { id: 'u-2', name: 'Rohan Mehta', email: 'rohan@cakebloom.com', mobile: '9811122233', password: 'parent123', role: 'parent', childName: 'Vivaan Mehta', childDob: iso(addDays(-360)), createdAt: iso(addDays(-52)) },
+      { id: 'u-3', name: 'Priya Nair', email: 'priya@cakebloom.com', mobile: '9822233445', password: 'parent123', role: 'parent', childName: 'Aarav Nair', childDob: iso(addDays(-375)), createdAt: iso(addDays(-41)) },
+      { id: 'u-4', name: 'Karthik Reddy', email: 'karthik@cakebloom.com', mobile: '9833344556', password: 'parent123', role: 'parent', childName: 'Diya Reddy', childDob: iso(addDays(-340)), createdAt: iso(addDays(-33)) },
+      { id: 'u-5', name: 'Sneha Kulkarni', email: 'sneha@cakebloom.com', mobile: '9844455667', password: 'parent123', role: 'parent', childName: 'Ishaan Kulkarni', childDob: iso(addDays(-365)), createdAt: iso(addDays(-27)) },
+      { id: 'u-6', name: 'Farhan Ali', email: 'farhan@cakebloom.com', mobile: '9855566778', password: 'parent123', role: 'parent', childName: 'Zara Ali', childDob: iso(addDays(-352)), createdAt: iso(addDays(-19)) },
+      { id: 'u-7', name: 'Divya Raman', email: 'divya@cakebloom.com', mobile: '9866677889', password: 'parent123', role: 'parent', childName: 'Kavya Raman', childDob: iso(addDays(-330)), createdAt: iso(addDays(-12)) },
+      { id: 'u-8', name: 'Arjun Pillai', email: 'arjun@cakebloom.com', mobile: '9877788990', password: 'parent123', role: 'parent', childName: 'Reyansh Pillai', childDob: iso(addDays(-368)), createdAt: iso(addDays(-6)) },
+    ]);
+
+    const extraBookings = [
+      { id: 'bk-2', userId: 'u-2', packageId: 'pkg-2', themeId: 'th-2', date: iso(addDays(-28)), time: '10:30 AM', status: 'completed', notes: 'Superhero — cape fitting approved.', createdAt: iso(addDays(-42)) },
+      { id: 'bk-3', userId: 'u-3', packageId: 'pkg-4', themeId: 'th-4', date: iso(addDays(-24)), time: '12:00 PM', status: 'completed', notes: 'Space theme, prefers rocket launch frames.', createdAt: iso(addDays(-38)) },
+      { id: 'bk-4', userId: 'u-4', packageId: 'pkg-1', themeId: 'th-1', date: iso(addDays(-21)), time: '09:00 AM', status: 'completed', notes: '', createdAt: iso(addDays(-34)) },
+      { id: 'bk-5', userId: 'u-5', packageId: 'pkg-6', themeId: 'th-6', date: iso(addDays(-18)), time: '04:00 PM', status: 'completed', notes: 'Dinosaur rawr theme.', createdAt: iso(addDays(-30)) },
+      { id: 'bk-6', userId: 'u-6', packageId: 'pkg-3', themeId: 'th-3', date: iso(addDays(-15)), time: '02:30 PM', status: 'completed', notes: '', createdAt: iso(addDays(-26)) },
+      { id: 'bk-7', userId: 'u-7', packageId: 'pkg-5', themeId: 'th-5', date: iso(addDays(-11)), time: '11:00 AM', status: 'completed', notes: 'Rainbow arch, no glitter.', createdAt: iso(addDays(-22)) },
+      { id: 'bk-8', userId: 'u-8', packageId: 'pkg-7', themeId: 'th-7', date: iso(addDays(-8)), time: '05:30 PM', status: 'completed', notes: '', createdAt: iso(addDays(-19)) },
+      { id: 'bk-9', userId: 'u-2', packageId: 'pkg-10', themeId: 'th-10', date: iso(addDays(-4)), time: '10:30 AM', status: 'cancelled', notes: 'Family travel conflict.', createdAt: iso(addDays(-14)) },
+      { id: 'bk-10', userId: 'u-3', packageId: 'pkg-2', themeId: 'th-2', date: iso(addDays(2)), time: '10:30 AM', status: 'confirmed', notes: 'Returning family, superhero again.', createdAt: iso(addDays(-9)) },
+      { id: 'bk-11', userId: 'u-4', packageId: 'pkg-4', themeId: 'th-4', date: iso(addDays(3)), time: '12:00 PM', status: 'confirmed', notes: '', createdAt: iso(addDays(-7)) },
+      { id: 'bk-12', userId: 'u-5', packageId: 'pkg-1', themeId: 'th-1', date: iso(addDays(4)), time: '09:00 AM', status: 'pending', notes: 'Awaiting 50% advance.', createdAt: iso(addDays(-5)) },
+      { id: 'bk-13', userId: 'u-6', packageId: 'pkg-6', themeId: 'th-6', date: iso(addDays(9)), time: '04:00 PM', status: 'confirmed', notes: '', createdAt: iso(addDays(-4)) },
+      { id: 'bk-14', userId: 'u-7', packageId: 'pkg-3', themeId: 'th-3', date: iso(addDays(12)), time: '02:30 PM', status: 'confirmed', notes: 'Jungle safari set.', createdAt: iso(addDays(-3)) },
+      { id: 'bk-15', userId: 'u-8', packageId: 'pkg-5', themeId: 'th-5', date: iso(addDays(15)), time: '11:00 AM', status: 'pending', notes: 'Wants an earlier slot if possible.', createdAt: iso(addDays(-2)) },
+      { id: 'bk-16', userId: 'u-2', packageId: 'pkg-7', themeId: 'th-7', date: iso(addDays(18)), time: '05:30 PM', status: 'confirmed', notes: '', createdAt: iso(addDays(-1)) },
+    ];
+
+    addUnique(K.bookings, extraBookings);
+
+    const amountFor = { 'bk-2': 7499, 'bk-3': 8499, 'bk-4': 7999, 'bk-5': 7499, 'bk-6': 6999, 'bk-7': 6499, 'bk-8': 5999, 'bk-9': 11999, 'bk-10': 7499, 'bk-11': 8499, 'bk-12': 7999, 'bk-13': 7499, 'bk-14': 6999, 'bk-15': 6499, 'bk-16': 5999 };
+    const methods = ['UPI', 'Card', 'Net Banking', 'UPI', 'Cash'];
+    addUnique(K.payments, extraBookings.filter(b => b.status !== 'cancelled').map((b, i) => {
+      const total = amountFor[b.id] || 7999;
+      const advance = Math.round(total * 0.5);
+      const rest = total - advance;
+      const paid = b.status === 'completed' || b.status === 'confirmed';
+      return [
+        { id: 'pay-a-' + b.id, bookingId: b.id, userId: b.userId, amount: advance, date: b.createdAt, method: methods[i % methods.length], status: paid ? 'Paid' : 'Unpaid', txnId: 'CB' + (2100 + i * 7) + 'A' },
+        { id: 'pay-b-' + b.id, bookingId: b.id, userId: b.userId, amount: rest, date: b.date, method: methods[(i + 2) % methods.length], status: b.status === 'completed' ? 'Paid' : 'Unpaid', txnId: 'CB' + (2100 + i * 7) + 'B' },
+      ];
+    }).flat());
+
+    addUnique(K.prints, [
+      { id: 'po-1', userId: 'u-2', type: 'Photo Album', size: '8x10 hardcover, 30 pages', qty: 1, price: 5499, status: 'Delivered', createdAt: iso(addDays(-24)) },
+      { id: 'po-2', userId: 'u-3', type: 'Canvas Print', size: '24x36 inch stretched', qty: 2, price: 8999, status: 'Processing', createdAt: iso(addDays(-5)) },
+      { id: 'po-3', userId: 'u-4', type: 'Framed Print', size: '12x18 inch oak frame', qty: 1, price: 3499, status: 'In Progress', createdAt: iso(addDays(-3)) },
+      { id: 'po-4', userId: 'u-5', type: 'Photo Box', size: '10x10 inch, 20 prints', qty: 1, price: 4299, status: 'Processing', createdAt: iso(addDays(-2)) },
+      { id: 'po-5', userId: 'u-6', type: 'Calendar', size: 'A4 wall calendar 2026', qty: 3, price: 1899, status: 'Delivered', createdAt: iso(addDays(-9)) },
+      { id: 'po-6', userId: 'u-7', type: 'Photo Album', size: '8x10 hardcover, 30 pages', qty: 1, price: 5499, status: 'In Progress', createdAt: iso(addDays(-1)) },
+      { id: 'po-7', userId: 'u-8', type: 'Framed Print', size: '16x24 inch black frame', qty: 1, price: 3999, status: 'Processing', createdAt: todayISO2() },
+    ]);
+
+    addUnique(K.enquiries, [
+      { id: 'enq-1', name: 'Nikhil Bose', email: 'nikhil@example.com', phone: '9900111222', message: 'Do you offer outdoor sessions? Planning a garden birthday in November.', date: iso(addDays(-2)), status: 'New' },
+      { id: 'enq-2', name: 'Meera Joshi', email: 'meera.j@example.com', phone: '9900222333', message: 'My daughter is 14 months — is she still in the ideal age window for a cake smash?', date: iso(addDays(-4)), status: 'New' },
+      { id: 'enq-3', name: 'Sameer Gupta', email: 'sameer.g@example.com', phone: '9900333444', message: 'Can we book the Superhero theme plus an extra family portrait set on the same day?', date: iso(addDays(-6)), status: 'Resolved' },
+      { id: 'enq-4', name: 'Lakshmi Iyer', email: 'lakshmi.i@example.com', phone: '9900444555', message: 'What is the difference between the Teddy Bear and Minimalist packages?', date: iso(addDays(-9)), status: 'Resolved' },
+      { id: 'enq-5', name: 'Vikram Shetty', email: 'vikram.s@example.com', phone: '9900555666', message: 'Looking for a corporate-style bulk order of 15 album covers — do you handle that?', date: iso(addDays(-1)), status: 'New' },
+    ]);
+
+    /* Historical paid sessions so charts and revenue views have depth */
+    const pastBookings = [];
+    const pastPayments = [];
+    const monthShift = (m, day) => {
+      const d = new Date();
+      d.setMonth(d.getMonth() - m);
+      d.setDate(Math.min(day, 28));
+      return iso(d);
+    };
+    const pastSpec = [
+      [5, 'u-3', 'pkg-1', 'th-1', 7999, '12:00 PM', 'completed'],
+      [5, 'u-5', 'pkg-4', 'th-4', 8499, '10:30 AM', 'completed'],
+      [4, 'u-2', 'pkg-2', 'th-2', 7499, '02:30 PM', 'completed'],
+      [4, 'u-7', 'pkg-6', 'th-6', 7499, '09:00 AM', 'completed'],
+      [3, 'u-4', 'pkg-5', 'th-5', 6499, '11:00 AM', 'completed'],
+      [3, 'u-8', 'pkg-3', 'th-3', 6999, '04:00 PM', 'completed'],
+      [2, 'u-6', 'pkg-1', 'th-1', 7999, '10:30 AM', 'completed'],
+      [2, 'u-3', 'pkg-10', 'th-10', 11999, '12:00 PM', 'completed'],
+      [1, 'u-5', 'pkg-2', 'th-2', 7499, '05:30 PM', 'completed'],
+      [1, 'u-2', 'pkg-4', 'th-4', 8499, '09:00 AM', 'completed'],
+      [0, 'u-7', 'pkg-1', 'th-1', 7999, '11:00 AM', 'completed'],
+      [0, 'u-4', 'pkg-6', 'th-6', 7499, '02:30 PM', 'confirmed'],
+    ];
+    pastSpec.forEach(([m, userId, packageId, themeId, price, time, status], i) => {
+      const id = 'bk-p' + m + '-' + i;
+      const date = monthShift(m, 6 + (i % 18));
+      pastBookings.push({ id, userId, packageId, themeId, date, time, status, notes: '', createdAt: monthShift(m, 1 + (i % 18)) });
+      const advance = Math.round(price * 0.5);
+      if (status === 'completed') {
+        pastPayments.push({ id: 'pay-p' + m + '-' + i + '-a', bookingId: id, userId, amount: advance, date: monthShift(m, 1 + (i % 18)), method: ['UPI', 'Card', 'Net Banking', 'Cash'][i % 4], status: 'Paid', txnId: 'CB' + (1700 + m * 40 + i * 5) + 'A' });
+        pastPayments.push({ id: 'pay-p' + m + '-' + i + '-b', bookingId: id, userId, amount: price - advance, date, method: ['UPI', 'UPI', 'Card'][i % 3], status: 'Paid', txnId: 'CB' + (1700 + m * 40 + i * 5) + 'B' });
+      } else {
+        pastPayments.push({ id: 'pay-p' + m + '-' + i + '-a', bookingId: id, userId, amount: advance, date: monthShift(m, 1 + (i % 18)), method: 'UPI', status: 'Paid', txnId: 'CB' + (1700 + m * 40 + i * 5) + 'A' });
+      }
+    });
+    addUnique(K.bookings, pastBookings);
+    addUnique(K.payments, pastPayments);
+
+    /* A couple of sessions on today's date so the daily schedule is populated */
+    const todayD = new Date();
+    const todayStr = iso(todayD);
+    addUnique(K.bookings, [
+      { id: 'bk-t-1', userId: 'u-3', packageId: 'pkg-4', themeId: 'th-4', date: todayStr, time: '10:30 AM', status: 'confirmed', notes: 'Rocket launch frame as the finale.', createdAt: iso(addDays(-6)) },
+      { id: 'bk-t-2', userId: 'u-6', packageId: 'pkg-1', themeId: 'th-1', date: todayStr, time: '12:00 PM', status: 'confirmed', notes: '', createdAt: iso(addDays(-5)) },
+      { id: 'bk-t-3', userId: 'u-8', packageId: 'pkg-7', themeId: 'th-7', date: todayStr, time: '02:30 PM', status: 'pending', notes: 'Advance received this morning.', createdAt: iso(addDays(-4)) },
+    ]);
+    const proofPhotos = [
+      'assets/images/photos/gal-smash-1.jpg', 'assets/images/photos/gal-smash-2.jpg',
+      'assets/images/photos/gal-smash-3.jpg', 'assets/images/photos/gal-smash-4.jpg',
+      'assets/images/photos/gal-birthday-1.jpg', 'assets/images/photos/proof-2.jpg',
+      'assets/images/photos/proof-4.jpg', 'assets/images/photos/featured-3-kids-cake.jpg',
+    ];
+    const captions = ['First look at the cake', 'The big splash', 'Curious fingers', 'Frosting everywhere',
+      'Giggles with daddy', 'Cake champion', 'Blowing the candle', 'Messy mitts', 'Family frame', 'Nap-time close-up'];
+    const done = extraBookings.filter(b => b.status === 'completed');
+    const newProofs = [];
+    done.forEach((b, bi) => {
+      const count = 3 + (bi % 3);
+      for (let i = 0; i < count; i++) {
+        newProofs.push({
+          id: 'pr-x-' + b.id + '-' + i,
+          bookingId: b.id,
+          image: proofPhotos[(bi * 2 + i) % proofPhotos.length],
+          caption: captions[(bi * 3 + i) % captions.length],
+          favorite: i === 1,
+          selected: i < 2,
+          edited: i === 2,
+        });
+      }
+    });
+    addUnique(K.proofs, newProofs);
+
+    localStorage.setItem(upgradeFlag, '1');
+  }
+  window.cbUpgradeSeed = upgradeSeed;
 
   /* ---------------- Theme & direction ---------------- */
   function applyTheme(t) {
@@ -137,6 +287,103 @@
   };
   document.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal-backdrop')) e.target.classList.add('hidden'), document.body.style.overflow = '';
+  });
+
+  /* ---------------- Theme & direction toggles (shared across pages) ---------------- */
+  /* Icon-only theme/direction buttons. Any markup using [data-panel-theme] or
+     [data-panel-dir] gets wired, so panels injected later can opt in by calling
+     cbBindPanelToggles() again. */
+  window.cbBindPanelToggles = function (root) {
+    const scope = root || document;
+    const dark = document.documentElement.classList.contains('dark');
+    const rtl = document.documentElement.getAttribute('dir') === 'rtl';
+
+    scope.querySelectorAll('[data-panel-theme]').forEach(btn => {
+      const iconEl = btn.querySelector('[data-theme-icon]');
+      if (iconEl) iconEl.innerHTML = '<i data-lucide="' + (dark ? 'sun' : 'moon') + '" class="w-[18px] h-[18px]"></i>';
+      btn.classList.toggle('on', dark);
+      const label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+      btn.title = label;
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('aria-pressed', String(dark));
+      if (!btn.dataset.bound) {
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', () => {
+          const next = !document.documentElement.classList.contains('dark');
+          cbApplyTheme(next ? 'dark' : 'light');
+          cbBindPanelToggles();
+          cbRefreshIcons();
+          cbToast(next ? 'Dark mode on' : 'Light mode on', 'info');
+        });
+      }
+    });
+
+    scope.querySelectorAll('[data-panel-dir]').forEach(btn => {
+      const iconEl = btn.querySelector('[data-dir-icon]');
+      if (iconEl) iconEl.innerHTML = '<i data-lucide="arrow-left-right" class="w-[18px] h-[18px]"></i>';
+      btn.classList.toggle('on', rtl);
+      const label = rtl ? 'Switch to left-to-right (LTR)' : 'Switch to right-to-left (RTL)';
+      btn.title = label;
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('aria-pressed', String(rtl));
+      if (!btn.dataset.bound) {
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', () => {
+          const isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+          cbApplyDirection(isRtl ? 'ltr' : 'rtl');
+          cbBindPanelToggles();
+          cbRefreshIcons();
+          cbToast(isRtl ? 'Direction: LTR' : 'Direction: RTL', 'info');
+        });
+      }
+    });
+
+    cbRefreshIcons();
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const themeBtn = document.getElementById('theme-toggle');
+    const syncThemeIcon = () => {
+      if (!themeBtn) return;
+      const dark = document.documentElement.classList.contains('dark');
+      themeBtn.innerHTML = '<i data-lucide="' + (dark ? 'sun' : 'moon') + '" class="w-[18px] h-[18px]"></i>';
+      themeBtn.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    };
+    if (themeBtn) {
+      syncThemeIcon();
+      themeBtn.addEventListener('click', () => {
+        const dark = !document.documentElement.classList.contains('dark');
+        cbApplyTheme(dark ? 'dark' : 'light');
+        syncThemeIcon();
+        cbBindPanelToggles();
+        cbRefreshIcons();
+        cbToast(dark ? 'Dark mode on' : 'Light mode on', 'info');
+      });
+    }
+
+    const dirBtn = document.getElementById('dir-toggle');
+    const syncDirIcon = () => {
+      if (!dirBtn) return;
+      const rtl = document.documentElement.getAttribute('dir') === 'rtl';
+      dirBtn.innerHTML = '<i data-lucide="arrow-left-right" class="w-[18px] h-[18px]"></i>';
+      const label = rtl ? 'Switch to left-to-right (LTR)' : 'Switch to right-to-left (RTL)';
+      dirBtn.title = label;
+      dirBtn.setAttribute('aria-label', label);
+      dirBtn.setAttribute('aria-pressed', String(rtl));
+    };
+    if (dirBtn) {
+      syncDirIcon();
+      dirBtn.addEventListener('click', () => {
+        const rtl = document.documentElement.getAttribute('dir') === 'rtl';
+        cbApplyDirection(rtl ? 'ltr' : 'rtl');
+        syncDirIcon();
+        cbBindPanelToggles();
+        cbRefreshIcons();
+        cbToast(rtl ? 'Direction: LTR' : 'Direction: RTL', 'info');
+      });
+    }
+
+    cbBindPanelToggles();
   });
 
   /* ---------------- Lightbox ---------------- */
@@ -249,6 +496,11 @@
       proofImagesChanged = true;
     }
   });
-  if (proofImagesChanged) write(K.proofs, seededProofs);
-  document.addEventListener('DOMContentLoaded', () => cbObserveReveals());
+    if (proofImagesChanged) write(K.proofs, seededProofs);
+
+    upgradeSeed();
+    document.addEventListener('DOMContentLoaded', () => {
+      cbRefreshIcons();
+      cbObserveReveals();
+    });
 })();

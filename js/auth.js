@@ -85,6 +85,14 @@
     });
   }
 
+  /* ---------------- Social login (demo) ---------------- */
+  document.querySelectorAll('[data-social]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const provider = btn.getAttribute('data-social');
+      cbToast(provider + ' sign-in is not wired up in this demo.', 'info');
+    });
+  });
+
   // Redirect if already logged in
   if (document.body.getAttribute('data-auth') === 'guest-only' && cbUser()) {
     location.href = cbUser().role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html';

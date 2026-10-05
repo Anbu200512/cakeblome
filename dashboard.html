@@ -1,10 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parent Dashboard â€” CakeBloom</title>
-  <meta name="description" content="CakeBloom parent dashboard â€” manage bookings, proofs, print orders, payments and profile.">
+  <title>Parent Dashboard — CakeBloom</title>
+  <meta name="description" content="CakeBloom parent dashboard — manage bookings, proofs, print orders, payments and profile.">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -39,21 +40,22 @@
     <div id="dash-sidebar"></div>
   </aside>
 
-  <button id="drawer-btn" class="lg:hidden fixed bottom-5 start-5 z-[60] w-12 h-12 rounded-full bg-pink-500 text-white shadow-xl shadow-pink-300/50 grid place-items-center hover:scale-110 transition" aria-label="Open menu">
-    <i data-lucide="panel-left" class="w-5 h-5"></i>
-  </button>
-
-  <header class="fixed top-0 start-0 end-0 lg:start-72 z-50 border-b border-pink-100 dark:border-white/10 bg-white/90 dark:bg-ink-900/90 backdrop-blur-xl">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-      <div class="min-w-0">
-        <div class="font-display font-extrabold text-ink-800 dark:text-white truncate">Parent Dashboard</div>
-        <div class="hidden sm:block text-xs font-semibold text-ink-700/60 dark:text-[#8B86A3]">Your CakeBloom studio space</div>
+<header class="fixed top-0 start-0 end-0 lg:start-72 z-50 border-b border-pink-100 dark:border-white/10 bg-white/90 dark:bg-ink-900/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 sm:gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <button id="drawer-btn" class="lg:hidden w-10 h-10 shrink-0 rounded-xl grid place-items-center text-ink-700 dark:text-[#D5D1E8] hover:bg-blush-50 dark:hover:bg-white/10 transition" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+<div class="min-w-0">
+          <div class="font-display font-extrabold text-ink-800 dark:text-white truncate">Parent Dashboard</div>
+          <div class="hidden sm:block text-xs font-semibold text-ink-700/60 dark:text-[#8B86A3]">Your CakeBloom studio space</div>
+        </div>
       </div>
       <div class="flex items-center gap-2">
-        <button id="dir-toggle" class="w-10 h-10 rounded-xl grid place-items-center text-ink-700 dark:text-[#D5D1E8] hover:bg-blush-50 dark:hover:bg-white/10 transition" title="Switch text direction" aria-label="Switch text direction">
+<button id="dir-toggle" class="hidden lg:grid w-10 h-10 rounded-xl place-items-center text-ink-700 dark:text-[#D5D1E8] hover:bg-blush-50 dark:hover:bg-white/10 transition" title="Switch text direction" aria-label="Switch text direction">
           <i data-lucide="arrow-left-right" class="w-[18px] h-[18px]"></i>
         </button>
-        <button id="theme-toggle" class="w-10 h-10 rounded-xl grid place-items-center text-ink-700 dark:text-[#D5D1E8] hover:bg-blush-50 dark:hover:bg-white/10 transition" title="Toggle dark or light mode" aria-label="Toggle dark or light mode">
+        <button id="theme-toggle" class="hidden lg:grid w-10 h-10 rounded-xl place-items-center text-ink-700 dark:text-[#D5D1E8] hover:bg-blush-50 dark:hover:bg-white/10 transition" title="Toggle dark or light mode" aria-label="Toggle dark or light mode">
           <i data-lucide="moon" class="w-[18px] h-[18px]"></i>
         </button>
         <a href="dashboard.html#profile" class="w-10 h-10 rounded-xl bg-blush-100 dark:bg-blush-500/15 grid place-items-center text-blush-500 hover:scale-105 transition" aria-label="Go to profile" title="Profile">
@@ -63,7 +65,7 @@
     </div>
   </header>
 
-  <main id="dash-main" class="lg:ms-72 mt-16 min-h-[calc(100vh-4rem)] px-4 sm:px-6 lg:px-8 pt-0 pb-24 lg:pb-8"></main>
+  <main id="dash-main" class="lg:ms-72 mt-16 min-h-[calc(100vh-4rem)] px-4 sm:px-6 lg:px-8 pt-0 pb-8"></main>
 
   <div id="receipt-modal" class="modal-backdrop hidden">
     <div class="modal-panel modal-content"></div>

@@ -1,10 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard â€” CakeBloom</title>
-  <meta name="description" content="CakeBloom admin dashboard â€” manage bookings, customers, packages, themes, slots, proofs, prints, payments and enquiries.">
+  <title>Admin Dashboard — CakeBloom</title>
+  <meta name="description" content="CakeBloom admin dashboard — manage bookings, customers, packages, themes, slots, proofs, prints, payments and enquiries.">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -33,25 +34,43 @@
   </script>
 </head>
 <body class="bg-lav-100/40 dark:bg-ink-950 text-ink-700 dark:text-[#D5D1E8] font-body" data-page="admin">
-  <div id="site-nav"></div>
-
   <div id="drawer-overlay" class="hidden fixed inset-0 bg-black/40 z-[70] lg:hidden"></div>
 
-  <aside id="mobile-drawer" class="fixed inset-y-0 start-0 z-[80] w-72 max-w-[85vw] -translate-x-full rtl:translate-x-full lg:translate-x-0 transition-transform duration-300 bg-white dark:bg-ink-900 border-e border-pink-100 dark:border-white/10 overflow-y-auto shadow-2xl">
+<aside id="mobile-drawer" class="dashboard-drawer fixed inset-y-0 start-0 z-[80] w-72 max-w-[85vw] transition-transform duration-300 bg-white dark:bg-ink-900 border-e border-pink-100 dark:border-white/10 overflow-y-auto shadow-2xl">
     <div id="admin-sidebar"></div>
   </aside>
 
-  <button id="drawer-btn" class="lg:hidden fixed bottom-5 start-5 z-[60] w-12 h-12 rounded-full bg-pink-500 text-white shadow-xl shadow-violet-300/50 grid place-items-center hover:scale-110 transition" aria-label="Open menu">
-    <i data-lucide="panel-left" class="w-5 h-5"></i>
-  </button>
+  <header class="fixed top-0 start-0 end-0 lg:start-72 z-50 border-b border-pink-100 dark:border-white/10 bg-white/90 dark:bg-ink-900/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 sm:gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <button id="drawer-btn" class="lg:hidden w-10 h-10 shrink-0 rounded-xl grid place-items-center text-ink-700 dark:text-[#D5D1E8] hover:bg-blush-50 dark:hover:bg-white/10 transition" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+<div class="min-w-0">
+          <div class="font-display font-extrabold text-ink-800 dark:text-white truncate">Admin Dashboard</div>
+          <div class="hidden sm:block text-xs font-semibold text-ink-700/60 dark:text-[#8B86A3]">CakeBloom studio control center</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="dir-toggle" class="hidden lg:grid w-10 h-10 rounded-xl place-items-center text-ink-700 dark:text-[#D5D1E8] hover:bg-blush-50 dark:hover:bg-white/10 transition" title="Switch text direction" aria-label="Switch text direction">
+          <i data-lucide="arrow-left-right" class="w-[18px] h-[18px]"></i>
+        </button>
+        <button id="theme-toggle" class="hidden lg:grid w-10 h-10 rounded-xl place-items-center text-ink-700 dark:text-[#D5D1E8] hover:bg-blush-50 dark:hover:bg-white/10 transition" title="Toggle dark or light mode" aria-label="Toggle dark or light mode">
+          <i data-lucide="moon" class="w-[18px] h-[18px]"></i>
+        </button>
+        <a href="index.html" class="w-10 h-10 rounded-xl bg-blush-100 dark:bg-blush-500/15 grid place-items-center text-blush-500 hover:scale-105 transition" aria-label="Back to site" title="Back to site">
+          <i data-lucide="house" class="w-[18px] h-[18px]"></i>
+        </a>
+      </div>
+    </div>
+  </header>
 
-  <main id="admin-main" class="lg:ms-72 min-h-[calc(100vh-4rem)] px-4 sm:px-6 lg:px-8 py-8 pb-24 lg:pb-8"></main>
+  <main id="admin-main" class="lg:ms-72 mt-16 min-h-[calc(100vh-4rem)] px-4 sm:px-6 lg:px-8 pt-0 pb-8"></main>
 
   <div id="crud-modal" class="modal-backdrop hidden">
     <div class="modal-panel modal-content"></div>
   </div>
 
-  <div id="site-footer"></div>
   <script src="js/main.js"></script>
   <script src="js/nav.js"></script>
   <script src="js/admin.js"></script>

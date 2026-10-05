@@ -1,4 +1,4 @@
-﻿/* CakeBloom â€” packages page (filters + modal), gallery page, studio tour */
+﻿/* CakeBloom — packages page (filters + modal), gallery page, studio tour */
 (function () {
   'use strict';
 
@@ -50,7 +50,7 @@
               <h3 class="font-display font-bold text-lg text-[#3B3654] dark:text-white">${cbEscape(p.name)}</h3>
               <span class="font-display font-bold text-pink-500">${cbMoney(p.price)}</span>
             </div>
-            <p class="text-xs font-semibold text-[#8B86A3] mb-3">${cbEscape(p.theme)} theme Â· ${cbEscape(p.duration)} Â· ${p.photos} edited photos</p>
+            <p class="text-xs font-semibold text-[#8B86A3] mb-3">${cbEscape(p.theme)} theme · ${cbEscape(p.duration)} · ${p.photos} edited photos</p>
             <ul class="text-sm font-semibold text-[#55506E] dark:text-[#C6C1DA] space-y-1.5 mb-4 flex-1">
               <li class="flex items-center gap-2"><i data-lucide="image" class="w-4 h-4 text-pink-400"></i>${cbEscape(p.backdrop)}</li>
               <li class="flex items-center gap-2"><i data-lucide="cake" class="w-4 h-4 text-violet-400"></i>${cbEscape(p.cake)}</li>
@@ -120,17 +120,17 @@
   const galGrid = document.getElementById('gallery-grid');
   if (galGrid) {
     const items = [
-      { cat: 'Cake Smash', src: 'assets/images/photos/gal-smash-1.jpg', cap: 'Pink Perfection â€” a joyful cake smash' },
-      { cat: 'Cake Smash', src: 'assets/images/photos/gal-smash-2.jpg', cap: 'Blueberry Bash â€” frosting and fun' },
-      { cat: 'Cake Smash', src: 'assets/images/photos/gal-smash-3.jpg', cap: 'Purple Haze â€” a colorful first smash' },
-      { cat: 'Cake Smash', src: 'assets/images/photos/gal-smash-4.jpg', cap: 'Mint Condition â€” little hands, big mess' },
-      { cat: 'First Birthday', src: 'assets/images/photos/gal-birthday-1.jpg', cap: 'One & Fun â€” a candlelit birthday' },
-      { cat: 'First Birthday', src: 'assets/images/photos/gal-birthday-2.webp', cap: 'Birthday Wishes â€” a special first birthday' },
-      { cat: 'First Birthday', src: 'assets/images/photos/h2-gallery-3-birthday-joy.jpg', cap: 'Birthday Joy â€” celebrating the big one' },
-      { cat: 'Baby Portraits', src: 'assets/images/photos/h2-gallery-1-tiny-portraits.jpg', cap: 'Tiny Portraits â€” little details to remember' },
-      { cat: 'Baby Portraits', src: 'assets/images/photos/h2-gallery-5-rosy-cheeks.jpg', cap: 'Rosy Cheeks â€” a sweet baby portrait' },
-      { cat: 'Family', src: 'assets/images/photos/h2-gallery-2-family-first.jpg', cap: 'Family First â€” together for the milestone' },
-      { cat: 'Theme Sessions', src: 'assets/images/photos/h2-gallery-4-blueberry-bash.jpg', cap: 'Blueberry Bash â€” a playful themed session' },
+      { cat: 'Cake Smash', src: 'assets/images/photos/gal-smash-1.jpg', cap: 'Pink Perfection — a joyful cake smash' },
+      { cat: 'Cake Smash', src: 'assets/images/photos/gal-smash-2.jpg', cap: 'Blueberry Bash — frosting and fun' },
+      { cat: 'Cake Smash', src: 'assets/images/photos/gal-smash-3.jpg', cap: 'Purple Haze — a colorful first smash' },
+      { cat: 'Cake Smash', src: 'assets/images/photos/gal-smash-4.jpg', cap: 'Mint Condition — little hands, big mess' },
+      { cat: 'First Birthday', src: 'assets/images/photos/gal-birthday-1.jpg', cap: 'One & Fun — a candlelit birthday' },
+      { cat: 'First Birthday', src: 'assets/images/photos/gal-birthday-2.webp', cap: 'Birthday Wishes — a special first birthday' },
+      { cat: 'First Birthday', src: 'assets/images/photos/h2-gallery-3-birthday-joy.jpg', cap: 'Birthday Joy — celebrating the big one' },
+      { cat: 'Baby Portraits', src: 'assets/images/photos/h2-gallery-1-tiny-portraits.jpg', cap: 'Tiny Portraits — little details to remember' },
+      { cat: 'Baby Portraits', src: 'assets/images/photos/h2-gallery-5-rosy-cheeks.jpg', cap: 'Rosy Cheeks — a sweet baby portrait' },
+      { cat: 'Family', src: 'assets/images/photos/h2-gallery-2-family-first.jpg', cap: 'Family First — together for the milestone' },
+      { cat: 'Theme Sessions', src: 'assets/images/photos/h2-gallery-4-blueberry-bash.jpg', cap: 'Blueberry Bash — a playful themed session' },
     ];
     function renderGallery() {
       galGrid.innerHTML = items.map((it, i) => `
@@ -158,7 +158,7 @@
     const spots = [
       { src: 'assets/images/photos/studio-entrance.jpg', cap: 'Studio Entrance', desc: 'A warm, welcoming doorway with a pastel welcome wall, sanitised shoe rack and a tiny coat hanger corner for little guests.' },
       { src: 'assets/images/photos/studio-main.jpg', cap: 'Cake Smash Area', desc: 'Our signature smash zone: a padded floor, themed backdrop and a low table set at the perfect height for tiny cake destroyers.' },
-      { src: 'assets/images/photos/studio-about.jpg', cap: 'Themed Backdrops', desc: 'Ten hand-painted and printed backdrops â€” from royal castles to galaxies â€” swapped in minutes between sessions.' },
+      { src: 'assets/images/photos/studio-about.jpg', cap: 'Themed Backdrops', desc: 'Ten hand-painted and printed backdrops — from royal castles to galaxies — swapped in minutes between sessions.' },
       { src: 'assets/images/photos/studio-sanitised-props.jpg', cap: 'Props Collection', desc: 'Over 200 props: tiaras, capes, tails, crowns, balloons and handmade sets, all washed after every session.' },
       { src: 'assets/images/photos/studio-parent-lounge.jpg', cap: 'Parent Waiting Area', desc: 'A cosy lounge with comfortable seating, charging points, refreshments and a live view of the shoot on our monitor.' },
       { src: 'assets/images/photos/studio-nursing-room.jpg', cap: 'Changing Area', desc: 'A private, sanitised changing space with a nursing mirror, wipes, and outfit hooks for every costume change.' },
